@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "309345353349",
+    "firebase_url": "https://agri-commerce-3d2d8.firebaseio.com",
+    "project_id": "agri-commerce-3d2d8",
+    "storage_bucket": "agri-commerce-3d2d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309345353349:android:d6cf83dac2b0bdbb4e73ec",
+        "android_client_info": {
+          "package_name": "com.example.agri_commerce"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "309345353349-2ta48m62g106nkgm17cg95lvpbrlt0h1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlnkJj-txGFi2oKBnJBBu5uopv7MpbRbY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "309345353349-2ta48m62g106nkgm17cg95lvpbrlt0h1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
