@@ -1,10 +1,9 @@
 import 'package:agri_commerce/services/firebase_services.dart';
 import 'package:agri_commerce/tabs/home_tab.dart';
 import 'package:agri_commerce/tabs/saved_tab.dart';
-import 'package:agri_commerce/tabs/search_tab.dart';
+import 'package:agri_commerce/tabs/veg_page.dart';
 import 'package:agri_commerce/widgets/bottom_tabs.dart';
 import 'package:flutter/material.dart';
-
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -18,7 +17,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    print("UserID: ${_firebaseServices.getUserId()}");
     _tabsPageController = PageController();
     super.initState();
   }
@@ -31,6 +29,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -45,7 +44,7 @@ class _HomePageState extends State<HomePage> {
               },
               children: [
                 HomeTab(),
-                SearchTab(),
+                VegTab(),
                 SavedTab(),
               ],
             ),

@@ -3,13 +3,9 @@ import 'package:agri_commerce/services/firebase_services.dart';
 import 'package:agri_commerce/widgets/custom_action_bar.dart';
 import 'package:agri_commerce/widgets/image_swipe.dart';
 import 'package:agri_commerce/widgets/product_size.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 class ProductPage extends StatefulWidget {
   final String productId;
-
   ProductPage({this.productId});
 
   @override
@@ -17,22 +13,12 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  firebase_services _firebase_services = firebase_services();
-
-  final CollectionReference _productsRef =
-  FirebaseFirestore.instance.collection("Fruits");
-
-  final CollectionReference _usersRef = FirebaseFirestore
-      .instance
-      .collection("Users");
-
-  User _user = FirebaseAuth.instance.currentUser;
-
+  firebase_services _firebaseServices = firebase_services();
   String _selectedProductSize = "0";
 
   Future _addToCart() {
-    return _firebase_services.usersRef
-        .doc(_firebase_services.getUserId())
+    return _firebaseServices.usersRef
+        .doc(_firebaseServices.getUserId())
         .collection("Cart")
         .doc(widget.productId)
         .set({"size": _selectedProductSize});
@@ -46,7 +32,7 @@ class _ProductPageState extends State<ProductPage> {
       body: Stack(
         children: [
           FutureBuilder(
-            future: _firebase_services.productsRef.doc(widget.productId).get(),
+            future: _firebaseServices.productsRef.doc(widget.productId).get(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Scaffold(
@@ -88,7 +74,7 @@ class _ProductPageState extends State<ProductPage> {
                         horizontal: 24.0,
                       ),
                       child: Text(
-                        "\$${documentData['price']}",
+                        "\₹${documentData['price']}",
                         style: TextStyle(
                           fontSize: 18.0,
                           color: Theme.of(context).accentColor,

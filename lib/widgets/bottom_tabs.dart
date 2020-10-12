@@ -20,18 +20,18 @@ class _BottomTabsState extends State<BottomTabs> {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0)
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            spreadRadius: 1.0,
-            blurRadius: 30.0,
-          )
-        ]
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12.0),
+              topRight: Radius.circular(12.0)
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              spreadRadius: 1.0,
+              blurRadius: 30.0,
+            )
+          ]
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -61,9 +61,7 @@ class _BottomTabsState extends State<BottomTabs> {
             imagePath: "assets/images/tab_logout.png",
             selected: _selectedTab == 3 ? true : false,
             onPressed: () {
-              setState(() {
-                FirebaseAuth.instance.signOut();
-              });
+              FirebaseAuth.instance.signOut();
             },
           )
         ],
@@ -90,16 +88,16 @@ class BottomTabBtn extends StatelessWidget {
           horizontal: 24.0,
         ),
         decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: _selected ? Theme.of(context).accentColor : Colors.transparent,
-              width: 2.0,
+            border: Border(
+                top: BorderSide(
+                  color: _selected ? Theme.of(context).accentColor : Colors.transparent,
+                  width: 2.0,
+                )
             )
-          )
         ),
         child: Image(
           image: AssetImage(
-            imagePath ?? "assets/images/tab_home.png"
+              imagePath ?? "assets/images/tab_home.png"
           ),
           width: 22.0,
           height: 22.0,
@@ -109,4 +107,3 @@ class BottomTabBtn extends StatelessWidget {
     );
   }
 }
-

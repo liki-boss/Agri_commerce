@@ -1,8 +1,8 @@
 import 'package:agri_commerce/constants.dart';
 import 'package:agri_commerce/screens/cart_page.dart';
+import 'package:agri_commerce/screens/search_page.dart';
 import 'package:agri_commerce/services/firebase_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CustomActionBar extends StatelessWidget {
@@ -10,31 +10,34 @@ class CustomActionBar extends StatelessWidget {
   final bool hasBackArrrow;
   final bool hasTitle;
   final bool hasBackground;
-  CustomActionBar({this.title, this.hasBackArrrow, this.hasTitle, this.hasBackground});
+  final bool hasSearch;
+  final bool hasSpace;
+  CustomActionBar({this.title, this.hasSpace, this.hasBackArrrow, this.hasTitle, this.hasSearch, this.hasBackground});
 
+  firebase_services _firebaseServices = firebase_services();
 
   final CollectionReference _usersRef = FirebaseFirestore
       .instance
       .collection("Users");
-
-  firebase_services _firebaseServices = firebase_services();
 
   @override
   Widget build(BuildContext context) {
     bool _hasBackArrow = hasBackArrrow ?? false;
     bool _hasTitle = hasTitle ?? true;
     bool _hasBackground = hasBackground ?? true;
+    bool _hasSearch = hasSearch ?? false;
+    bool _hasSpace = hasSpace ?? true;
 
     return Container(
       decoration: BoxDecoration(
-        gradient: _hasBackground ? LinearGradient(
-          colors: [
-            Colors.white,
-            Colors.white.withOpacity(0),
-          ],
-          begin: Alignment(0, 0),
-          end: Alignment(0, 1),
-        ): null
+          gradient: _hasBackground ? LinearGradient(
+            colors: [
+              Colors.white,
+              Colors.white.withOpacity(0),
+            ],
+            begin: Alignment(0, 0),
+            end: Alignment(0, 1),
+          ): null
       ),
       padding: EdgeInsets.only(
         top: 56.0,
@@ -60,7 +63,7 @@ class CustomActionBar extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Image(
                   image: AssetImage(
-                    "assets/images/back_arrow.png"
+                      "assets/images/back_arrow.png"
                   ),
                   color: Colors.white,
                   width: 16.0,
@@ -73,11 +76,39 @@ class CustomActionBar extends StatelessWidget {
               title ?? "Action Bar",
               style: Constants.boldHeading,
             ),
+          if(_hasSpace)
+            Spacer(flex: 1,),
+          if(_hasSearch)
+            GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => SearchPage(),
+                ));
+              },
+              child: Container(
+                width: 42.0,
+                height: 42.0,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                alignment: Alignment.center,
+                child: Image(
+                  image: AssetImage(
+                      "assets/images/tab_search.png"
+                  ),
+                  color: Colors.black,
+                  width: 24.0,
+                  height: 24.0,
+                ),
+              ),
+            ),
+          if(_hasSpace)
+            SizedBox(width: 5,),
           GestureDetector(
-            onTap: (){
+            onTap: () {
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) => CartPage(),
-
               ));
             },
             child: Container(

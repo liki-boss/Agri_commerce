@@ -6,13 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
-
 class CartPage extends StatefulWidget {
   @override
   _CartPageState createState() => _CartPageState();
 }
 
 class _CartPageState extends State<CartPage> {
+
   firebase_services _firebaseServices = firebase_services();
 
   @override
@@ -21,7 +21,8 @@ class _CartPageState extends State<CartPage> {
       body: Stack(
         children: [
           FutureBuilder<QuerySnapshot>(
-            future: _firebaseServices.usersRef.doc(_firebaseServices.getUserId()).collection("Cart").get(),
+            future: _firebaseServices.usersRef.doc(_firebaseServices.getUserId())
+                .collection("Cart").get(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Scaffold(
@@ -43,19 +44,20 @@ class _CartPageState extends State<CartPage> {
                     return GestureDetector(
                       onTap: () {
                         Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => ProductPage(productId: document.id),
+                          builder: (context) => ProductPage(productId: document.id,),
                         ));
                       },
                       child: FutureBuilder(
-                        future: _firebaseServices.productsRef.doc(document.id).get()  ,
-                        builder: (context, productSnap){
-                          if(productSnap.hasError){
+                        future: _firebaseServices.productsRef.doc(document.id).get(),
+                        builder: (context, productSnap) {
+                          if(productSnap.hasError) {
                             return Container(
                               child: Center(
                                 child: Text("${productSnap.error}"),
                               ),
                             );
                           }
+
                           if(productSnap.connectionState == ConnectionState.done) {
                             Map _productMap = productSnap.data.data();
 
@@ -65,7 +67,8 @@ class _CartPageState extends State<CartPage> {
                                 horizontal: 24.0,
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment:
+                                MainAxisAlignment.start,
                                 children: [
                                   Container(
                                     width: 90,
@@ -81,7 +84,7 @@ class _CartPageState extends State<CartPage> {
                                   ),
                                   Container(
                                     padding: EdgeInsets.only(
-                                        left: 16.0
+                                      left: 16.0,
                                     ),
                                     child: Column(
                                       mainAxisAlignment:
@@ -90,7 +93,7 @@ class _CartPageState extends State<CartPage> {
                                       CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "${_productMap["name"]}",
+                                          "${_productMap['name']}",
                                           style: TextStyle(
                                               fontSize: 18.0,
                                               color: Colors.black,
@@ -98,42 +101,44 @@ class _CartPageState extends State<CartPage> {
                                               FontWeight.w600),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(
+                                          padding: const EdgeInsets
+                                              .symmetric(
                                             vertical: 4.0,
                                           ),
                                           child: Text(
-                                              "\$${_productMap["price"]}",
-                                              style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  color: Theme
-                                                      .of(context)
-                                                      .accentColor,
-                                                  fontWeight:
-                                                  FontWeight.w600)
+                                            "\₹${_productMap['price']}",
+                                            style: TextStyle(
+                                                fontSize: 16.0,
+                                                color: Theme.of(context)
+                                                    .accentColor,
+                                                fontWeight:
+                                                FontWeight.w600),
                                           ),
                                         ),
                                         Text(
-                                          "Size - ${ document.data()["size"]}",
+                                          "Size - ${document.data()['size']}",
                                           style: TextStyle(
                                               fontSize: 16.0,
                                               color: Colors.black,
                                               fontWeight:
                                               FontWeight.w600),
-                                        )
+                                        ),
                                       ],
                                     ),
-                                  )
+                                  ),
                                 ],
                               ),
                             );
+
                           }
+
                           return Container(
                             child: Center(
                               child: CircularProgressIndicator(),
                             ),
                           );
                         },
-                      )
+                      ),
                     );
                   }).toList(),
                 );
@@ -149,7 +154,8 @@ class _CartPageState extends State<CartPage> {
           ),
           CustomActionBar(
             hasBackArrrow: true,
-            title: 'Cart',
+            title: "Cart",
+            hasSpace: false,
           )
         ],
       ),

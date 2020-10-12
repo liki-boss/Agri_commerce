@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 
 class ProductCard extends StatelessWidget {
+  final String productId;
   final Function onPressed;
   final String imageUrl;
   final String title;
   final String price;
-  final String productId;
   ProductCard({this.onPressed, this.imageUrl, this.title, this.price, this.productId});
 
   @override
@@ -52,7 +52,7 @@ class ProductCard extends StatelessWidget {
                   MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                        title,
+                      title,
                       style: Constants.regularHeading,
                     ),
                     Text(

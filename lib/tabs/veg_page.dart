@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart';
 
-class HomeTab extends StatelessWidget {
+class VegTab extends StatelessWidget {
   firebase_services _firebaseServices = firebase_services();
 
   @override
@@ -16,7 +16,7 @@ class HomeTab extends StatelessWidget {
       child: Stack(
         children: [
           FutureBuilder<QuerySnapshot>(
-            future: _firebaseServices.productsRef.get(),
+            future: _firebaseServices.productRef1.get(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Scaffold(
@@ -54,7 +54,7 @@ class HomeTab extends StatelessWidget {
             },
           ),
           CustomActionBar(
-            title: "Fruits",
+            title: "Veggies",
             hasBackArrrow: false,
             hasSearch: true,
           ),
