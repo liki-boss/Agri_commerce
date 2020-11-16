@@ -14,13 +14,14 @@ class firebase_services {
       .instance
       .collection("Fruits");
 
-  final CollectionReference productRef1 = FirebaseFirestore
-      .instance
-      .collection("Vegetables");
-
   final CollectionReference usersRef = FirebaseFirestore
       .instance
       .collection("Users");
 
+  final CollectionReference userDetails =
+  FirebaseFirestore.instance.collection('name');
 
+  String getProductId() {
+    return _firebaseAuth.currentUser.uid;
+  }
 }

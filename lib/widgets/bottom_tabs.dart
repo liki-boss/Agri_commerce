@@ -51,17 +51,17 @@ class _BottomTabsState extends State<BottomTabs> {
             },
           ),
           BottomTabBtn(
-            imagePath: "assets/images/tab_saved.png",
+            imagePath: "assets/images/tab_search.png",
             selected: _selectedTab == 2 ? true : false,
             onPressed: () {
               widget.tabPressed(2);
             },
           ),
           BottomTabBtn(
-            imagePath: "assets/images/tab_logout.png",
+            imagePath: "assets/images/profile.png",
             selected: _selectedTab == 3 ? true : false,
             onPressed: () {
-              FirebaseAuth.instance.signOut();
+              widget.tabPressed(3);
             },
           )
         ],
@@ -97,7 +97,7 @@ class BottomTabBtn extends StatelessWidget {
         ),
         child: Image(
           image: AssetImage(
-              imagePath ?? "assets/images/tab_home.png"
+              imagePath ?? "assets/images/tab_fruits.png"
           ),
           width: 22.0,
           height: 22.0,

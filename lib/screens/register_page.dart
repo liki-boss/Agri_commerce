@@ -1,170 +1,374 @@
 import 'package:agri_commerce/constants.dart';
+import 'package:agri_commerce/services/firebase_services.dart';
 import 'package:agri_commerce/widgets/custom_btn.dart';
 import 'package:agri_commerce/widgets/custom_input.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class RegisterPage extends StatefulWidget {
+import 'home_page.dart';
+
+class Register extends StatefulWidget {
+  final String registerId;
+
+  Register({this.registerId});
+
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterState extends State<Register> {
+  final GoogleSignIn googleSignIn = new GoogleSignIn();
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final _formKey = GlobalKey<FormState>();
 
-  // Build an alert dialog to display some errors.
-  Future<void> _alertDialogBuilder(String error) async {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Error"),
-            content: Container(
-              child: Text(error),
-            ),
-            actions: [
-              FlatButton(
-                child: Text("Close Dialog"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          );
-        }
-    );
-  }
+  SharedPreferences preferences;
+  bool loading = false;
+  bool isLoggedIn = false;
+  bool hidePassword = true;
+  firebase_services _firebaseServices = firebase_services();
 
-  // Create a new user account
-  Future<String> _createAccount() async {
-    try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _registerEmail, password: _registerPassword);
-      return null;
-    } on FirebaseAuthException catch(e) {
-      if (e.code == 'weak-password') {
-        return 'The password provided is too weak.';
-      } else if (e.code == 'email-already-in-use') {
-        return 'The account already exists for that email.';
-      }
-      return e.message;
-    } catch (e) {
-      return e.toString();
-    }
-  }
+  TextEditingController _email = TextEditingController();
+  TextEditingController _username = TextEditingController();
+  TextEditingController _password = TextEditingController();
+  TextEditingController _repeatPassword = TextEditingController();
+  TextEditingController _profilePicture = TextEditingController();
+  String profilePic ;
 
-  void _submitForm() async {
-    // Set the form to loading state
-    setState(() {
-      _registerFormLoading = true;
-    });
-
-    // Run the create account method
-    String _createAccountFeedback = await _createAccount();
-
-    // If the string is not null, we got error while create account.
-    if(_createAccountFeedback != null) {
-      _alertDialogBuilder(_createAccountFeedback);
-
-      // Set the form to regular state [not loading].
-      setState(() {
-        _registerFormLoading = false;
-      });
-    } else {
-      // The String was null, user is logged in.
-      Navigator.pop(context);
-    }
-  }
-
-  // Default Form Loading State
-  bool _registerFormLoading = false;
-
-  // Form Input Field Values
-  String _registerEmail = "";
-  String _registerPassword = "";
-
-  // Focus Node for input fields
-  FocusNode _passwordFocusNode;
-
-  @override
-  void initState() {
-    _passwordFocusNode = FocusNode();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _passwordFocusNode.dispose();
-    super.dispose();
-  }
+  var _autovalidate = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.only(top: 100.0, left: 150.0),
+          ),
+          Column(
             children: [
-              Container(
-                padding: EdgeInsets.only(
-                  top: 24.0,
-                ),
-                child: Text(
-                  "Create A New Account",
-                  textAlign: TextAlign.center,
-                  style: Constants.boldHeading,
-                ),
-              ),
-              Column(
-                children: [
-                  CustomInput(
-                    hintText: "Email...",
-                    onChanged: (value) {
-                      _registerEmail = value;
-                    },
-                    onSubmitted: (value) {
-                      _passwordFocusNode.requestFocus();
-                    },
-                    textInputAction: TextInputAction.next,
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 110.0, bottom: 10, left: 23, right: 23),
+                        child: Container(
+                          child: Text(
+                            "Create Account",
+                            textAlign: TextAlign.center,
+                            style: Constants.boldHeading,
+                          ),
+                        ),
+                      ),
+                      Form(
+                        key: _formKey,
+                        autovalidate: _autovalidate,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 25.0, bottom: 10, left: 23, right: 23),
+                              child: TextFormField(
+                                keyboardType: TextInputType.emailAddress,
+                                controller: _email,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Email',
+                                  prefixIcon: Icon(Icons.email),
+                                ),
+                                validator: (value) {
+                                  if (value.isNotEmpty) {
+                                    Pattern pattern =
+                                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                                    RegExp regex = new RegExp(pattern);
+                                    if (!regex.hasMatch(value))
+                                      return 'Enter a valid email address!';
+                                    else
+                                      return null;
+                                  } else
+                                    return 'Email field cannot be empty!';
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 10.0, bottom: 10, left: 23, right: 23),
+                              child: TextFormField(
+                                controller: _username,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Username',
+                                  prefixIcon: Icon(Icons.account_circle),
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty)
+                                    return 'Username cannot be empty!';
+                                  return null;
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 8.0, bottom: 8, left: 23, right: 23),
+                              child: TextFormField(
+                                controller: _password,
+                                obscureText: hidePassword,
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Password',
+                                    prefixIcon: Icon(Icons.vpn_key),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(Icons.remove_red_eye),
+                                      onPressed: () {
+                                        setState(() {
+                                          hidePassword = !hidePassword;
+                                        });
+                                      },
+                                    )),
+                                validator: (value) {
+                                  if (value.isEmpty)
+                                    return 'Password field cannot be empty!';
+                                  else if (value.length < 8)
+                                    return 'Min password length is 8';
+                                  return null;
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 10.0, bottom: 10, left: 23, right: 23),
+                              child: TextFormField(
+                                controller: _repeatPassword,
+                                obscureText: hidePassword,
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Confirm password',
+                                    prefixIcon: Icon(Icons.vpn_key),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(Icons.remove_red_eye),
+                                      onPressed: () {
+                                        setState(() {
+                                          hidePassword = !hidePassword;
+                                        });
+                                      },
+                                    )),
+                                validator: (value) {
+                                  if (value.isEmpty)
+                                    return 'Password field cannot be empty!';
+                                  else if (value.length < 8)
+                                    return 'Min password length is 8';
+                                  else if (_password.text != value)
+                                    return "Passwords do not match!";
+                                  return null;
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 20.0, bottom: 8, left: 0, right: 0),
+                              child: CustomBtn(
+                                text: "Register",
+                                onPressed: () {
+                                  if (_formKey.currentState.validate())
+                                    customSignUp();
+                                  else
+                                    setState(() {
+                                      _autovalidate = true;
+                                    });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          "Or SignIn/SignUp with",
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 8.0, bottom: 8, left: 16, right: 16),
+                        child: IconButton(
+                            iconSize: 80,
+                            onPressed: () {
+                              handleGoogleSignIn();
+                            },
+                            icon: Image.asset(
+                              'assets/images/google.jpg',
+                            )),
+                      ),
+                    ],
                   ),
-                  CustomInput(
-                    hintText: "Password...",
-                    onChanged: (value) {
-                      _registerPassword = value;
-                    },
-                    focusNode: _passwordFocusNode,
-                    isPasswordField: true,
-                    onSubmitted: (value) {
-                      _submitForm();
-                    },
-                  ),
-                  CustomBtn(
-                    text: "Create New Account",
-                    onPressed: () {
-                      _submitForm();
-                    },
-                    isLoading: _registerFormLoading,
-                  )
-                ],
+                ),
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                  bottom: 16.0,
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Already have an account? "),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        "Login",
+                        style: TextStyle(fontSize: 18, color: Colors.black),
+                      ),
+                    ),
+                  ],
                 ),
-                child: CustomBtn(
-                  text: "Back To Login",
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  outlineBtn: true,
-                ),
-              ),
+              )
             ],
           ),
-        ),
+          Visibility(
+            visible: loading ?? true,
+            child: Center(
+              child: Container(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(Colors.blue),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  Future handleGoogleSignIn() async {
+    preferences = await SharedPreferences.getInstance();
+
+    setState(() {
+      loading = true;
+    });
+
+    GoogleSignInAccount googleUser = await googleSignIn.signIn();
+    GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    GoogleAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+    User firebaseUser =
+        (await firebaseAuth.signInWithCredential(credential)).user;
+
+    if (firebaseUser != null) {
+      final QuerySnapshot result = await FirebaseFirestore.instance
+          .collection('name')
+          .doc(firebaseUser.uid)
+          .collection("Details")
+          .where('email', isEqualTo: firebaseUser.email)
+          .get();
+      final List<DocumentSnapshot> documents = result.docs;
+
+      if (documents.length == 0) {
+        FirebaseFirestore.instance
+            .collection('name')
+            .doc(firebaseUser.uid)
+            .collection("Details")
+            .doc(_firebaseServices.getProductId())
+            .set({
+          "email": firebaseUser.email,
+          "username": firebaseUser.displayName,
+          "profilePicture": firebaseUser.photoURL
+        });
+
+        await preferences.setString("email", firebaseUser.email);
+        await preferences.setString("username", firebaseUser.displayName);
+        await preferences.setString("profilePicture", firebaseUser.photoURL);
+      } else {
+        await preferences.setString("email", documents[0].get("email"));
+        await preferences.setString("username", documents[0].get("username"));
+        await preferences.setString(
+            "profilePicture", documents[0].get("profilePicture"));
+      }
+
+      Fluttertoast.showToast(
+          msg: "Successfully logged in!",
+          backgroundColor: Colors.blue,
+          textColor: Colors.white);
+
+      setState(() {
+        loading = false;
+      });
+
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+      ;
+    } else {
+      Fluttertoast.showToast(
+          msg: "Login failed!",
+          backgroundColor: Colors.blue,
+          textColor: Colors.white);
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  Future customSignUp() async {
+    setState(() {
+      loading = true;
+    });
+
+    try {
+      //TODO: Email verification
+
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+          email: _email.text, password: _password.text);
+      profilePic =
+      "https://image.shutterstock.com/image-vector/vector-simple-male-profile-icon-260nw-1388357696.jpg";
+
+      final CollectionReference userDetails =
+      FirebaseFirestore.instance.collection('name');
+
+      User _user = FirebaseAuth.instance.currentUser;
+      Future _addDetails() {
+        return userDetails
+            .doc(_user.uid)
+            .collection("Details")
+            .doc(_firebaseServices.getProductId())
+            .set({
+          "email": _email.text,
+          "username": _username.text,
+          "profilePicture": profilePic,
+        });
+      }
+
+      _addDetails();
+      Fluttertoast.showToast(
+          msg: "Successfully registered!",
+          backgroundColor: Colors.blue,
+          textColor: Colors.white);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        Fluttertoast.showToast(
+            msg: 'The password provided is too weak.',
+            backgroundColor: Colors.blue,
+            textColor: Colors.white);
+      } else if (e.code == 'email-already-in-use') {
+        Fluttertoast.showToast(
+            msg: 'The account already exists for that email.',
+            backgroundColor: Colors.blue,
+            textColor: Colors.white);
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+
+    setState(() {
+      loading = false;
+    });
   }
 }

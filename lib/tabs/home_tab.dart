@@ -56,7 +56,6 @@ class HomeTab extends StatelessWidget {
           CustomActionBar(
             title: "Fruits",
             hasBackArrrow: false,
-            hasSearch: true,
           ),
         ],
       ),

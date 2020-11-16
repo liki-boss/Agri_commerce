@@ -1,6 +1,5 @@
 import 'package:agri_commerce/services/firebase_services.dart';
 import 'package:agri_commerce/widgets/custom_action_bar.dart';
-import 'package:agri_commerce/widgets/custom_input.dart';
 import 'package:agri_commerce/widgets/product_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +15,7 @@ class VegTab extends StatelessWidget {
       child: Stack(
         children: [
           FutureBuilder<QuerySnapshot>(
-            future: _firebaseServices.productRef1.get(),
+            future: _firebaseServices.productsRef.get(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Scaffold(
@@ -56,7 +55,6 @@ class VegTab extends StatelessWidget {
           CustomActionBar(
             title: "Veggies",
             hasBackArrrow: false,
-            hasSearch: true,
           ),
         ],
       ),

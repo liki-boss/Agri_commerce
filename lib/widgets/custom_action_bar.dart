@@ -1,8 +1,9 @@
 import 'package:agri_commerce/constants.dart';
 import 'package:agri_commerce/screens/cart_page.dart';
-import 'package:agri_commerce/screens/search_page.dart';
+import 'package:agri_commerce/screens/saved_page.dart';
 import 'package:agri_commerce/services/firebase_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomActionBar extends StatelessWidget {
@@ -10,9 +11,10 @@ class CustomActionBar extends StatelessWidget {
   final bool hasBackArrrow;
   final bool hasTitle;
   final bool hasBackground;
-  final bool hasSearch;
+  final bool hasSaved;
   final bool hasSpace;
-  CustomActionBar({this.title, this.hasSpace, this.hasBackArrrow, this.hasTitle, this.hasSearch, this.hasBackground});
+  final bool hasCart;
+  CustomActionBar({this.title, this.hasSpace, this.hasBackArrrow, this.hasTitle, this.hasSaved, this.hasCart, this.hasBackground});
 
   firebase_services _firebaseServices = firebase_services();
 
@@ -25,8 +27,9 @@ class CustomActionBar extends StatelessWidget {
     bool _hasBackArrow = hasBackArrrow ?? false;
     bool _hasTitle = hasTitle ?? true;
     bool _hasBackground = hasBackground ?? true;
-    bool _hasSearch = hasSearch ?? false;
-    bool _hasSpace = hasSpace ?? true;
+    bool _hasSaved = hasSaved ?? true;
+    bool _hasSpace = hasSpace ?? false;
+    bool _hasCart = hasCart ?? true;
 
     return Container(
       decoration: BoxDecoration(
@@ -71,6 +74,8 @@ class CustomActionBar extends StatelessWidget {
                 ),
               ),
             ),
+          if(_hasSpace)
+            Spacer(flex: 1,),
           if(_hasTitle)
             Text(
               title ?? "Action Bar",
@@ -78,69 +83,103 @@ class CustomActionBar extends StatelessWidget {
             ),
           if(_hasSpace)
             Spacer(flex: 1,),
-          if(_hasSearch)
+          if(_hasCart)
             GestureDetector(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => SearchPage(),
-                ));
-              },
-              child: Container(
-                width: 42.0,
-                height: 42.0,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                alignment: Alignment.center,
-                child: Image(
-                  image: AssetImage(
-                      "assets/images/tab_search.png"
-                  ),
-                  color: Colors.black,
-                  width: 24.0,
-                  height: 24.0,
-                ),
-              ),
-            ),
-          if(_hasSpace)
-            SizedBox(width: 5,),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => CartPage(),
-              ));
-            },
-            child: Container(
-              width: 42.0,
-              height: 42.0,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              alignment: Alignment.center,
-              child: StreamBuilder(
-                stream: _usersRef.doc(_firebaseServices.getUserId()).collection("Cart").snapshots(),
-                builder: (context, snapshot) {
-                  int _totalItems = 0;
-
-                  if(snapshot.connectionState == ConnectionState.active) {
-                    List _documents = snapshot.data.docs;
-                    _totalItems = _documents.length;
-                  }
-
-                  return Text(
-                    "$_totalItems" ?? "0",
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+              child: Row(
+                children: [
+                  if(_hasSaved)
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => SavedPage(),
+                        ));
+                      },
+                      child: Container(
+                        width: 36.0,
+                        height: 36.0,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        alignment: Alignment.centerRight,
+                        child: Image(
+                          image: AssetImage(
+                              "assets/images/heart.png"
+                          ),
+                          color: Colors.black,
+                          width: 20.0,
+                          height: 20.0,
+                        ),
+                      ),
                     ),
-                  );
-                },
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => CartPage(),
+                      ));
+                    },
+                    child: Container(
+                      width: 36.0,
+                      height: 36.0,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      alignment: Alignment.centerRight,
+                      child: Image(
+                        image: AssetImage(
+                            "assets/images/customer.png"
+                        ),
+                        color: Colors.black,
+                        width: 18.0,
+                        height: 20.0,
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => CartPage(),
+                      ));
+                    },
+                    child: Container(
+                      width: 10.0,
+                      height: 16.0,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                      alignment: Alignment.center,
+
+                      child: StreamBuilder(
+
+                        stream: _usersRef.doc(_firebaseServices.getUserId())
+                            .collection("Cart")
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          int _totalItems = 0;
+
+                          if (snapshot.connectionState ==
+                              ConnectionState.active) {
+                            List _documents = snapshot.data.docs;
+                            _totalItems = _documents.length;
+                          }
+
+                          return Text(
+                            "$_totalItems" ?? "0",
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          )
         ],
       ),
     );

@@ -6,12 +6,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
-class CartPage extends StatefulWidget {
+class SavedPage extends StatefulWidget {
   @override
-  _CartPageState createState() => _CartPageState();
+  _SavedPageState createState() => _SavedPageState();
 }
 
-class _CartPageState extends State<CartPage> {
+class _SavedPageState extends State<SavedPage> {
 
   firebase_services _firebaseServices = firebase_services();
 
@@ -22,7 +22,7 @@ class _CartPageState extends State<CartPage> {
         children: [
           FutureBuilder<QuerySnapshot>(
             future: _firebaseServices.usersRef.doc(_firebaseServices.getUserId())
-                .collection("Cart").get(),
+                .collection("Saved").get(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Scaffold(
@@ -154,7 +154,7 @@ class _CartPageState extends State<CartPage> {
           ),
           CustomActionBar(
             hasBackArrrow: true,
-            title: "Cart",
+            title: "Saved",
             hasSpace: true,
             hasCart: false,
           )

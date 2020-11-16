@@ -1,7 +1,8 @@
 import 'package:agri_commerce/services/firebase_services.dart';
 import 'package:agri_commerce/tabs/home_tab.dart';
-import 'package:agri_commerce/tabs/saved_tab.dart';
-import 'package:agri_commerce/tabs/veg_page.dart';
+import 'package:agri_commerce/tabs/profile_tab.dart';
+import 'package:agri_commerce/tabs/search_tab.dart';
+import 'package:agri_commerce/tabs/veg_tab.dart';
 import 'package:agri_commerce/widgets/bottom_tabs.dart';
 import 'package:flutter/material.dart';
 class HomePage extends StatefulWidget {
@@ -45,7 +46,8 @@ class _HomePageState extends State<HomePage> {
               children: [
                 HomeTab(),
                 VegTab(),
-                SavedTab(),
+                SearchTab(),
+                ProfileTab(),
               ],
             ),
           ),

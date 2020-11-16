@@ -25,15 +25,6 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   final SnackBar _snackBar = SnackBar(content: Text("Product added to the cart"),);
-  final SnackBar _snackBar1 = SnackBar(content: Text("Product saved"),);
-
-  Future _addToSaved() {
-    return _firebaseServices.usersRef
-        .doc(_firebaseServices.getUserId())
-        .collection("Saved")
-        .doc(widget.productId)
-        .set({"size": _selectedProductSize});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,25 +115,19 @@ class _ProductPageState extends State<ProductPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          GestureDetector(
-                            onTap: () async {
-                              await _addToSaved();
-                              Scaffold.of(context).showSnackBar(_snackBar1);
-                            },
-                            child: Container(
-                              width: 65.0,
-                              height: 65.0,
-                              decoration: BoxDecoration(
-                                color: Color(0xFFDCDCDC),
-                                borderRadius: BorderRadius.circular(12.0),
+                          Container(
+                            width: 65.0,
+                            height: 65.0,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFDCDCDC),
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            alignment: Alignment.center,
+                            child: Image(
+                              image: AssetImage(
+                                "assets/images/tab_saved.png",
                               ),
-                              alignment: Alignment.center,
-                              child: Image(
-                                image: AssetImage(
-                                  "assets/images/tab_saved.png",
-                                ),
-                                height: 22.0,
-                              ),
+                              height: 22.0,
                             ),
                           ),
                           Expanded(
