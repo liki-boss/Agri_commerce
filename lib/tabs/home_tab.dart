@@ -16,7 +16,7 @@ class HomeTab extends StatelessWidget {
       child: Stack(
         children: [
           FutureBuilder<QuerySnapshot>(
-            future: _firebaseServices.productsRef.get(),
+            future: _firebaseServices.productsRef.where('category', isEqualTo: 'Fruits').get(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Scaffold(
@@ -36,10 +36,10 @@ class HomeTab extends StatelessWidget {
                   ),
                   children: snapshot.data.docs.map((document) {
                     return ProductCard(
-                      title: document.data()['name'],
-                      imageUrl: document.data()['images'][0],
-                      price: "\₹${document.data()['price']}",
-                      productId: document.id,
+                        title: document.data()['name'],
+                        imageUrl: document.data()['images'][0],
+                        price: "\₹${document.data()['price']}",
+                        productId: document.id,
                     );
                   }).toList(),
                 );

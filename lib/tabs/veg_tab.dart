@@ -15,7 +15,7 @@ class VegTab extends StatelessWidget {
       child: Stack(
         children: [
           FutureBuilder<QuerySnapshot>(
-            future: _firebaseServices.productsRef.get(),
+            future: _firebaseServices.productsRef.where('category', isEqualTo: 'Vegetables').get(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Scaffold(
