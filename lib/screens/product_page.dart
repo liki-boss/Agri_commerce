@@ -1,4 +1,6 @@
 import 'package:agri_commerce/constants.dart';
+import 'package:agri_commerce/models/fruits.dart';
+import 'package:agri_commerce/models/vegetables.dart';
 import 'package:agri_commerce/services/firebase_services.dart';
 import 'package:agri_commerce/widgets/custom_action_bar.dart';
 import 'package:agri_commerce/widgets/image_swipe.dart';
@@ -57,7 +59,18 @@ class _ProductPageState extends State<ProductPage> {
 
                 // List of images
                 List imageList = documentData['images'];
-                List productSizes = documentData['size'];
+                List productSizes;
+
+                if (documentData['category'] == 'Fruits')
+                  productSizes = Fruits[documentData['sub-category']]['weighted']
+                      ? Fruits[documentData['sub-category']]['weights']
+                      : [1];
+                else
+                  productSizes = Vegetables[documentData['sub-category']]['weighted']
+                      ? Vegetables[documentData['sub-category']]['weights']
+                      : [1];
+
+                _selectedProductSize = productSizes[0].toString();
 
                 return ListView(
                   padding: EdgeInsets.all(0),

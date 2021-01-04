@@ -1,4 +1,5 @@
 import 'package:agri_commerce/screens/product_page.dart';
+import 'package:agri_commerce/screens/intermediate_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ class ProductCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(
-          builder: (context) => ProductPage(productId: productId,),
+          builder: (context) => IntermediatePage(productName: title,),
         ));
       },
       child: Container(

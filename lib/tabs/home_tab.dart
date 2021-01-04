@@ -36,7 +36,7 @@ class HomeTab extends StatelessWidget {
                   ),
                   children: snapshot.data.docs.map((document) {
                     return ProductCard(
-                        title: document.data()['name'],
+                        title: document.data()['sub-category'],
                         imageUrl: document.data()['images'][0],
                         price: "\₹${document.data()['price']}",
                         productId: document.id,

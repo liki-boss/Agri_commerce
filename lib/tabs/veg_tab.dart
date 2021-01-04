@@ -1,5 +1,6 @@
 import 'package:agri_commerce/services/firebase_services.dart';
 import 'package:agri_commerce/widgets/custom_action_bar.dart';
+import 'package:agri_commerce/widgets/custom_input.dart';
 import 'package:agri_commerce/widgets/product_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,7 @@ class VegTab extends StatelessWidget {
                   ),
                   children: snapshot.data.docs.map((document) {
                     return ProductCard(
-                      title: document.data()['name'],
+                      title: document.data()['sub-category'],
                       imageUrl: document.data()['images'][0],
                       price: "\₹${document.data()['price']}",
                       productId: document.id,
