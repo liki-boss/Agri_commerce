@@ -3,6 +3,7 @@ import 'package:agri_commerce/widgets/custom_input.dart';
 import 'package:agri_commerce/widgets/product_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import '../constants.dart';
 class SearchPage extends StatefulWidget {
   @override
@@ -43,18 +44,19 @@ class _SearchPageState extends State<SearchPage> {
                 }
 
                 // Collection Data ready to display
-                if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.connectionState == ConnectionState.done &&
+                    snapshot.data != null) {
                   // Display the data inside a list view
                   return ListView(
                     padding: EdgeInsets.only(
                       top: 128.0,
                       bottom: 12.0,
                     ),
-                    children: snapshot.data.docs.map((document) {
+                    children: snapshot.data!.docs.map((document) {
                       return ProductCard(
-                        title: document.data()['name'],
-                        imageUrl: document.data()['images'][0],
-                        price: "\₹${document.data()['price']}",
+                        title: document.get('name'),
+                        imageUrl: document.get('images')[0],
+                        price: "\₹${document.get('price')}",
                         productId: document.id,
                       );
                     }).toList(),

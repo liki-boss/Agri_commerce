@@ -6,22 +6,21 @@ class firebase_services {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
-  String getUserId(){
-
-    return _firebaseAuth.currentUser.uid;
+  String? getUserId() {
+    if (_firebaseAuth.currentUser != null)
+      return _firebaseAuth.currentUser!.uid;
   }
-  final CollectionReference productsRef = FirebaseFirestore
-      .instance
-      .collection("Products");
 
-  final CollectionReference usersRef = FirebaseFirestore
-      .instance
-      .collection("Users");
+  final CollectionReference productsRef =
+      FirebaseFirestore.instance.collection("Products");
+
+  final CollectionReference usersRef =
+      FirebaseFirestore.instance.collection("Users");
 
   final CollectionReference userDetails =
   FirebaseFirestore.instance.collection('name');
 
   String getProductId() {
-    return _firebaseAuth.currentUser.uid;
+    return _firebaseAuth.currentUser!.uid;
   }
 }

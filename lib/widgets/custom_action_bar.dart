@@ -7,20 +7,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomActionBar extends StatelessWidget {
-  final String title;
-  final bool hasBackArrrow;
-  final bool hasTitle;
-  final bool hasBackground;
-  final bool hasSaved;
-  final bool hasSpace;
-  final bool hasCart;
-  CustomActionBar({this.title, this.hasSpace, this.hasBackArrrow, this.hasTitle, this.hasSaved, this.hasCart, this.hasBackground});
+  final String? title;
+  final bool? hasBackArrrow;
+  final bool? hasTitle;
+  final bool? hasBackground;
+  final bool? hasSaved;
+  final bool? hasSpace;
+  final bool? hasCart;
+
+  CustomActionBar(
+      {this.title,
+      this.hasSpace,
+      this.hasBackArrrow,
+      this.hasTitle,
+      this.hasSaved,
+      this.hasCart,
+      this.hasBackground});
 
   firebase_services _firebaseServices = firebase_services();
 
-  final CollectionReference _usersRef = FirebaseFirestore
-      .instance
-      .collection("Users");
+  final CollectionReference _usersRef =
+      FirebaseFirestore.instance.collection("Users");
 
   @override
   Widget build(BuildContext context) {
@@ -151,22 +158,23 @@ class CustomActionBar extends StatelessWidget {
                       ),
                       alignment: Alignment.center,
 
-                      child: StreamBuilder(
-
-                        stream: _usersRef.doc(_firebaseServices.getUserId())
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: _usersRef
+                            .doc(_firebaseServices.getUserId())
                             .collection("Cart")
                             .snapshots(),
                         builder: (context, snapshot) {
                           int _totalItems = 0;
 
                           if (snapshot.connectionState ==
-                              ConnectionState.active) {
-                            List _documents = snapshot.data.docs;
+                                  ConnectionState.active &&
+                              snapshot.data != null) {
+                            List _documents = snapshot.data!.docs;
                             _totalItems = _documents.length;
                           }
 
                           return Text(
-                            "$_totalItems" ?? "0",
+                            "$_totalItems",
                             style: TextStyle(
                               fontSize: 12.0,
                               fontWeight: FontWeight.w600,

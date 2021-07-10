@@ -3,10 +3,13 @@ import 'package:agri_commerce/services/firebase_services.dart';
 import 'package:agri_commerce/widgets/custom_action_bar.dart';
 import 'package:agri_commerce/widgets/image_swipe.dart';
 import 'package:agri_commerce/widgets/product_size.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 class ProductPage extends StatefulWidget {
   final String productId;
-  ProductPage({this.productId});
+
+  ProductPage({required this.productId});
 
   @override
   _ProductPageState createState() => _ProductPageState();
@@ -31,7 +34,7 @@ class _ProductPageState extends State<ProductPage> {
     return Scaffold(
       body: Stack(
         children: [
-          FutureBuilder(
+          FutureBuilder<DocumentSnapshot>(
             future: _firebaseServices.productsRef.doc(widget.productId).get(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
@@ -42,9 +45,11 @@ class _ProductPageState extends State<ProductPage> {
                 );
               }
 
-              if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.data != null) {
                 // Firebase Document Data Map
-                Map<String, dynamic> documentData = snapshot.data.data();
+                Map<String, dynamic> documentData =
+                    snapshot.data!.data() as Map<String, dynamic>;
 
                 // List of images
                 List imageList = documentData['images'];

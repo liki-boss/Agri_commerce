@@ -1,10 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class BottomTabs extends StatefulWidget {
-  final int selectedTab;
+  final int? selectedTab;
   final Function(int) tabPressed;
-  BottomTabs({this.selectedTab, this.tabPressed});
+
+  BottomTabs({this.selectedTab, required this.tabPressed});
 
   @override
   _BottomTabsState createState() => _BottomTabsState();
@@ -71,10 +71,11 @@ class _BottomTabsState extends State<BottomTabs> {
 }
 
 class BottomTabBtn extends StatelessWidget {
-  final String imagePath;
-  final bool selected;
-  final Function onPressed;
-  BottomTabBtn({this.imagePath, this.selected, this.onPressed});
+  final String? imagePath;
+  final bool? selected;
+  final Function() onPressed;
+
+  BottomTabBtn({this.imagePath, this.selected, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -96,12 +97,12 @@ class BottomTabBtn extends StatelessWidget {
             )
         ),
         child: Image(
-          image: AssetImage(
-              imagePath ?? "assets/images/tab_fruits.png"
-          ),
+          image: AssetImage(imagePath ?? "assets/images/tab_fruits.png"),
           width: 22.0,
           height: 22.0,
-          color: _selected ? Theme.of(context).accentColor : Colors.black,
+          color: _selected
+              ? Theme.of(context).colorScheme.secondary
+              : Colors.black,
         ),
       ),
     );

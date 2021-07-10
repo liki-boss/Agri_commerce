@@ -46,18 +46,19 @@ class _SearchTabState extends State<SearchTab> {
                 }
 
                 // Collection Data ready to display
-                if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.connectionState == ConnectionState.done &&
+                    snapshot.data != null) {
                   // Display the data inside a list view
                   return ListView(
                     padding: EdgeInsets.only(
                       top: 128.0,
                       bottom: 12.0,
                     ),
-                    children: snapshot.data.docs.map((document) {
+                    children: snapshot.data!.docs.map((document) {
                       return ProductCard(
-                        title: document.data()['name'],
-                        imageUrl: document.data()['images'][0],
-                        price: "\$${document.data()['price']}",
+                        title: document.get('name'),
+                        imageUrl: document.get('images')[0],
+                        price: "\$${document.get('price')}",
                         productId: document.id,
                       );
                     }).toList(),

@@ -1,4 +1,3 @@
-import 'package:agri_commerce/screens/product_page.dart';
 import 'package:agri_commerce/screens/intermediate_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,18 +6,26 @@ import '../constants.dart';
 
 class ProductCard extends StatelessWidget {
   final String productId;
-  final Function onPressed;
+  final Function()? onPressed;
   final String imageUrl;
   final String title;
   final String price;
-  ProductCard({this.onPressed,  this.imageUrl, this.title, this.price, this.productId});
+
+  ProductCard(
+      {this.onPressed,
+      required this.imageUrl,
+      required this.title,
+      required this.price,
+      required this.productId});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => IntermediatePage(productName: title,),
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => IntermediatePage(productName: title,),
         ));
       },
       child: Container(

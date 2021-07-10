@@ -43,10 +43,10 @@ class LandingPage extends StatelessWidget {
               if(streamSnapshot.connectionState == ConnectionState.active) {
 
                 // Get the user
-                User _user = streamSnapshot.data;
+                User? _user = streamSnapshot.data as User?;
 
                 // If the user is null, we're not logged in
-                if(_user == null) {
+                if (_user == null) {
                   // user not logged in, head to login
                   return LoginPage();
                 } else {

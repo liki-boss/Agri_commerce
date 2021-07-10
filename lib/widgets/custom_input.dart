@@ -2,13 +2,20 @@ import 'package:agri_commerce/constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomInput extends StatelessWidget {
-  final String hintText;
-  final Function(String) onChanged;
+  final String? hintText;
+  final Function(String)? onChanged;
   final Function(String) onSubmitted;
-  final FocusNode focusNode;
-  final TextInputAction textInputAction;
-  final bool isPasswordField;
-  CustomInput({this.hintText, this.onChanged, this.onSubmitted, this.focusNode, this.textInputAction, this.isPasswordField});
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final bool? isPasswordField;
+
+  CustomInput(
+      {this.hintText,
+      this.onChanged,
+      required this.onSubmitted,
+      this.focusNode,
+      this.textInputAction,
+      this.isPasswordField});
 
   @override
   Widget build(BuildContext context) {

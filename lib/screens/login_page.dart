@@ -22,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
 
-  SharedPreferences preferences;
+  late SharedPreferences preferences;
   bool loading = false;
   bool isLoggedIn = false;
   bool hidePassword = true;
@@ -33,12 +33,9 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _password = TextEditingController();
   TextEditingController _repeatPassword = TextEditingController();
   TextEditingController _profilePicture = TextEditingController();
-  String profilePic;
+  late String profilePic;
 
   var _autovalidate = false;
-
-
-
 
   Future<void> _alertDialogBuilder(String error) async {
     return showDialog(
@@ -51,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Text(error),
             ),
             actions: [
-              FlatButton(
+              TextButton(
                 child: Text("Close Dialog"),
                 onPressed: () {
                   Navigator.pop(context);
@@ -63,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // Create a new user account
-  Future<String> _loginAccount() async {
+  Future<String?> _loginAccount() async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _loginEmail, password: _loginPassword);
@@ -87,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     // Run the create account method
-    String _loginFeedback = await _loginAccount();
+    String? _loginFeedback = await _loginAccount();
 
     // If the string is not null, we got error while create account.
     if (_loginFeedback != null) {
@@ -108,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
   String _loginPassword = "";
 
   // Focus Node for input fields
-  FocusNode _passwordFocusNode;
+  late FocusNode _passwordFocusNode;
 
   @override
   void initState() {
@@ -228,11 +225,11 @@ class _LoginPageState extends State<LoginPage> {
       loading = true;
     });
 
-    GoogleSignInAccount googleUser = await googleSignIn.signIn();
-    GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    GoogleAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-    User firebaseUser =
+    GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+    OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
+    User? firebaseUser =
         (await firebaseAuth.signInWithCredential(credential)).user;
 
     if (firebaseUser != null) {
@@ -256,9 +253,10 @@ class _LoginPageState extends State<LoginPage> {
           "profilePicture": firebaseUser.photoURL
         });
 
-        await preferences.setString("email", firebaseUser.email);
-        await preferences.setString("username", firebaseUser.displayName);
-        await preferences.setString("profilePicture", firebaseUser.photoURL);
+        await preferences.setString("email", firebaseUser.email ?? '');
+        await preferences.setString("username", firebaseUser.displayName ?? '');
+        await preferences.setString(
+            "profilePicture", firebaseUser.photoURL ?? '');
       } else {
         await preferences.setString("email", documents[0].get("email"));
         await preferences.setString("username", documents[0].get("username"));

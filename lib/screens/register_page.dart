@@ -1,7 +1,6 @@
 import 'package:agri_commerce/constants.dart';
 import 'package:agri_commerce/services/firebase_services.dart';
 import 'package:agri_commerce/widgets/custom_btn.dart';
-import 'package:agri_commerce/widgets/custom_input.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +11,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'home_page.dart';
 
 class Register extends StatefulWidget {
-  final String registerId;
+  // final String registerId;
 
-  Register({this.registerId});
+  // Register({this.registerId});
 
   @override
   _RegisterState createState() => _RegisterState();
@@ -25,7 +24,7 @@ class _RegisterState extends State<Register> {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
 
-  SharedPreferences preferences;
+  late SharedPreferences preferences;
   bool loading = false;
   bool isLoggedIn = false;
   bool hidePassword = true;
@@ -36,7 +35,7 @@ class _RegisterState extends State<Register> {
   TextEditingController _password = TextEditingController();
   TextEditingController _repeatPassword = TextEditingController();
   TextEditingController _profilePicture = TextEditingController();
-  String profilePic ;
+  late String profilePic;
 
   var _autovalidate = false;
 
@@ -85,8 +84,8 @@ class _RegisterState extends State<Register> {
                                   prefixIcon: Icon(Icons.email),
                                 ),
                                 validator: (value) {
-                                  if (value.isNotEmpty) {
-                                    Pattern pattern =
+                                  if (value != null && value.isNotEmpty) {
+                                    String pattern =
                                         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
                                     RegExp regex = new RegExp(pattern);
                                     if (!regex.hasMatch(value))
@@ -109,7 +108,7 @@ class _RegisterState extends State<Register> {
                                   prefixIcon: Icon(Icons.account_circle),
                                 ),
                                 validator: (value) {
-                                  if (value.isEmpty)
+                                  if (value != null && value.isEmpty)
                                     return 'Username cannot be empty!';
                                   return null;
                                 },
@@ -134,10 +133,12 @@ class _RegisterState extends State<Register> {
                                       },
                                     )),
                                 validator: (value) {
-                                  if (value.isEmpty)
-                                    return 'Password field cannot be empty!';
-                                  else if (value.length < 8)
-                                    return 'Min password length is 8';
+                                  if (value != null) {
+                                    if (value.isEmpty)
+                                      return 'Password field cannot be empty!';
+                                    else if (value.length < 8)
+                                      return 'Min password length is 8';
+                                  }
                                   return null;
                                 },
                               ),
@@ -161,9 +162,9 @@ class _RegisterState extends State<Register> {
                                       },
                                     )),
                                 validator: (value) {
-                                  if (value.isEmpty)
+                                  if (value != null && value.isEmpty)
                                     return 'Password field cannot be empty!';
-                                  else if (value.length < 8)
+                                  else if (value != null && value.length < 8)
                                     return 'Min password length is 8';
                                   else if (_password.text != value)
                                     return "Passwords do not match!";
@@ -177,7 +178,7 @@ class _RegisterState extends State<Register> {
                               child: CustomBtn(
                                 text: "Register",
                                 onPressed: () {
-                                  if (_formKey.currentState.validate())
+                                  if (_formKey.currentState!.validate())
                                     customSignUp();
                                   else
                                     setState(() {
@@ -232,7 +233,7 @@ class _RegisterState extends State<Register> {
             ],
           ),
           Visibility(
-            visible: loading ?? true,
+            visible: loading,
             child: Center(
               child: Container(
                 child: CircularProgressIndicator(
@@ -253,11 +254,11 @@ class _RegisterState extends State<Register> {
       loading = true;
     });
 
-    GoogleSignInAccount googleUser = await googleSignIn.signIn();
-    GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    GoogleAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-    User firebaseUser =
+    GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+    OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
+    User? firebaseUser =
         (await firebaseAuth.signInWithCredential(credential)).user;
 
     if (firebaseUser != null) {
@@ -281,9 +282,10 @@ class _RegisterState extends State<Register> {
           "profilePicture": firebaseUser.photoURL
         });
 
-        await preferences.setString("email", firebaseUser.email);
-        await preferences.setString("username", firebaseUser.displayName);
-        await preferences.setString("profilePicture", firebaseUser.photoURL);
+        await preferences.setString("email", firebaseUser.email ?? '');
+        await preferences.setString("username", firebaseUser.displayName ?? '');
+        await preferences.setString(
+            "profilePicture", firebaseUser.photoURL ?? '');
       } else {
         await preferences.setString("email", documents[0].get("email"));
         await preferences.setString("username", documents[0].get("username"));
@@ -324,27 +326,28 @@ class _RegisterState extends State<Register> {
 
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-          email: _email.text, password: _password.text);
+              email: _email.text, password: _password.text);
       profilePic =
-      "https://image.shutterstock.com/image-vector/vector-simple-male-profile-icon-260nw-1388357696.jpg";
+          "https://image.shutterstock.com/image-vector/vector-simple-male-profile-icon-260nw-1388357696.jpg";
 
       final CollectionReference userDetails =
-      FirebaseFirestore.instance.collection('name');
+          FirebaseFirestore.instance.collection('name');
 
-      User _user = FirebaseAuth.instance.currentUser;
-      Future _addDetails() {
-        return userDetails
-            .doc(_user.uid)
-            .collection("Details")
-            .doc(_firebaseServices.getProductId())
-            .set({
-          "email": _email.text,
-          "username": _username.text,
-          "profilePicture": profilePic,
-        });
-      }
+      User? _user = FirebaseAuth.instance.currentUser;
+      if (_user != null)
+        Future _addDetails() {
+          return userDetails
+              .doc(_user.uid)
+              .collection("Details")
+              .doc(_firebaseServices.getProductId())
+              .set({
+            "email": _email.text,
+            "username": _username.text,
+            "profilePicture": profilePic,
+          });
+        }
 
-      _addDetails();
+      // _addDetails();
       Fluttertoast.showToast(
           msg: "Successfully registered!",
           backgroundColor: Colors.blue,

@@ -50,14 +50,14 @@ class Product {
 
   Product.fromSnapshot(DocumentSnapshot snapshot) {
     _id = snapshot.id;
-    _name = snapshot.data()[NAME];
-    _description = snapshot.data()[DESCRIPTION];
-    _images = snapshot.data()[IMAGES];
-    _price = snapshot.data()[PRICE];
-    _category = snapshot.data()[CATEGORY];
-    _subCategory = snapshot.data()[SUB_CATEGORY];
-    _sellerId = snapshot.data()[SELLER_ID];
-    _sellerName = snapshot.data()[SELLER_NAME];
-    _available = snapshot.data()[AVAILABLE];
+    _name = snapshot.get(NAME);
+    _description = snapshot.get(DESCRIPTION);
+    _images = snapshot.get(IMAGES);
+    _price = snapshot.get(PRICE);
+    _category = snapshot.get(CATEGORY);
+    _subCategory = snapshot.get(SUB_CATEGORY);
+    _sellerId = snapshot.get(SELLER_ID);
+    _sellerName = snapshot.get(SELLER_NAME);
+    _available = snapshot.get(AVAILABLE);
   }
 }

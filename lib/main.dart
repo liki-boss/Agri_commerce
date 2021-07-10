@@ -1,8 +1,11 @@
+import 'package:agri_commerce/app_bloc_observer.dart';
 import 'package:agri_commerce/screens/landing_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
+  Bloc.observer = AppBlocObserver();
   runApp(MyApp());
 }
 
@@ -16,10 +19,11 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.poppinsTextTheme(
           Theme.of(context).textTheme,
         ),
-        accentColor: Color(0xFFFF1E00)
+        colorScheme: Theme.of(context)
+            .colorScheme
+            .copyWith(secondary: Color(0xFFFF1E00)),
       ),
       home: LandingPage(),
     );
   }
 }
-

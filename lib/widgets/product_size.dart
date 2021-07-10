@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ProductSize extends StatefulWidget {
   final List productSizes;
   final Function(String) onSelected;
-  ProductSize({this.productSizes, this.onSelected});
+  ProductSize({required this.productSizes, required this.onSelected});
 
   @override
   _ProductSizeState createState() => _ProductSizeState();

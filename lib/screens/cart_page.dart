@@ -4,8 +4,6 @@ import 'package:agri_commerce/widgets/custom_action_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../constants.dart';
 class CartPage extends StatefulWidget {
   @override
   _CartPageState createState() => _CartPageState();
@@ -33,24 +31,32 @@ class _CartPageState extends State<CartPage> {
               }
 
               // Collection Data ready to display
-              if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.data != null) {
                 // Display the data inside a list view
                 return ListView(
                   padding: EdgeInsets.only(
                     top: 108.0,
                     bottom: 12.0,
                   ),
-                  children: snapshot.data.docs.map((document) {
+                  children: snapshot.data!.docs.map((document) {
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => ProductPage(productId: document.id,),
-                        ));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductPage(
+                                productId: document.id,
+                              ),
+                            ));
                       },
-                      child: FutureBuilder(
-                        future: _firebaseServices.productsRef.doc(document.id).get(),
-                        builder: (context, productSnap) {
-                          if(productSnap.hasError) {
+                      child: FutureBuilder<DocumentSnapshot>(
+                        future: _firebaseServices.productsRef
+                            .doc(document.id)
+                            .get(),
+                        builder: (context,
+                            AsyncSnapshot<DocumentSnapshot> productSnap) {
+                          if (productSnap.hasError) {
                             return Container(
                               child: Center(
                                 child: Text("${productSnap.error}"),
@@ -58,8 +64,11 @@ class _CartPageState extends State<CartPage> {
                             );
                           }
 
-                          if(productSnap.connectionState == ConnectionState.done) {
-                            Map _productMap = productSnap.data.data();
+                          if (productSnap.connectionState ==
+                                  ConnectionState.done &&
+                              productSnap.data != null) {
+                            Map<String, dynamic> _productMap = productSnap.data!
+                                .data() as Map<String, dynamic>;
 
                             return Padding(
                               padding: const EdgeInsets.symmetric(
@@ -67,8 +76,7 @@ class _CartPageState extends State<CartPage> {
                                 horizontal: 24.0,
                               ),
                               child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
                                     width: 90,
@@ -116,12 +124,11 @@ class _CartPageState extends State<CartPage> {
                                           ),
                                         ),
                                         Text(
-                                          "Size - ${document.data()['size']}",
+                                          "Size - ${document.get('size')}",
                                           style: TextStyle(
                                               fontSize: 16.0,
                                               color: Colors.black,
-                                              fontWeight:
-                                              FontWeight.w600),
+                                              fontWeight: FontWeight.w600),
                                         ),
                                       ],
                                     ),

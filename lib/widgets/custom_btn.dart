@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class CustomBtn extends StatelessWidget {
-  final String text;
-  final Function onPressed;
-  final bool outlineBtn;
-  final bool isLoading;
-  CustomBtn({this.text, this.onPressed, this.outlineBtn, this.isLoading});
+  final String? text;
+  final Function() onPressed;
+  final bool? outlineBtn;
+  final bool? isLoading;
+
+  CustomBtn(
+      {this.text, required this.onPressed, this.outlineBtn, this.isLoading});
 
   @override
   Widget build(BuildContext context) {

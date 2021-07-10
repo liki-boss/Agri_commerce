@@ -1,6 +1,6 @@
 import 'package:agri_commerce/services/firebase_services.dart';
 import 'package:agri_commerce/tabs/home_tab.dart';
-import 'package:agri_commerce/tabs/profile_tab.dart';
+// import 'package:agri_commerce/tabs/profile_tab.dart';
 import 'package:agri_commerce/tabs/search_tab.dart';
 import 'package:agri_commerce/tabs/veg_tab.dart';
 import 'package:agri_commerce/widgets/bottom_tabs.dart';
@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   firebase_services _firebaseServices = firebase_services();
 
-  PageController _tabsPageController;
+  late PageController _tabsPageController;
   int _selectedTab = 0;
 
   @override
@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
                 HomeTab(),
                 VegTab(),
                 SearchTab(),
-                ProfileTab(),
+                // ProfileTab(),
               ],
             ),
           ),
