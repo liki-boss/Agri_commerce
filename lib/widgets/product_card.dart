@@ -1,82 +1,75 @@
-import 'package:agri_commerce/screens/intermediate_page.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:agri_commerce/widgets/product_size.dart';
 import 'package:flutter/material.dart';
-
-import '../constants.dart';
+import 'package:products_repository/products_repository.dart';
 
 class ProductCard extends StatelessWidget {
-  final String productId;
-  final Function()? onPressed;
-  final String imageUrl;
-  final String title;
-  final String price;
+  final Product product;
 
-  ProductCard(
-      {this.onPressed,
-      required this.imageUrl,
-      required this.title,
-      required this.price,
-      required this.productId});
+  const ProductCard({Key? key, required this.product}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => IntermediatePage(productName: title,),
-        ));
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        height: 350.0,
-        margin: EdgeInsets.symmetric(
-          vertical: 12.0,
-          horizontal: 24.0,
-        ),
-        child: Stack(
-          children: [
-            Container(
-              height: 350.0,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12.0),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.0),
+        border: Border.all(),
+      ),
+      padding: EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
                 child: Image.network(
-                  "$imageUrl",
-                  fit: BoxFit.cover,
+                  product.pictures[0],
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Row(
-                  mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
+              VerticalDivider(),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (product.tag.isNotEmpty)
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                          '#${product.tag}',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
+                        ),
+                      ),
                     Text(
-                      title,
-                      style: Constants.regularHeading,
-                    ),
-                    Text(
-                      price,
+                      product.farmerId,
                       style: TextStyle(
-                          fontSize: 18.0,
-                          color: Theme.of(context).accentColor,
-                          fontWeight: FontWeight.w600
+                        fontSize: 18,
                       ),
                     ),
+                    Text(
+                      '${product.communityId}, Mandya',
+                      style: TextStyle(color: Color(0xFF666666)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                          '@ Rs ${product.rate} per ${product.isWeighed ? 'kg' : 'unit'}'),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ProductSize(
+                          productSizes: product.weights,
+                          onSelected: (size) {},
+                        ),
+                        ElevatedButton(onPressed: () {}, child: Text('Add'))
+                      ],
+                    )
                   ],
                 ),
-              ),
-            )
-          ],
-        ),
+              )
+            ],
+          )
+        ],
       ),
     );
   }

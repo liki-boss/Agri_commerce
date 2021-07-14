@@ -9,8 +9,9 @@ import 'vegetables.dart';
 class Product extends Equatable {
   final String id;
   final String name;
+  final String tag;
   final String description;
-  final List<String> pictures;
+  final List pictures;
   final int rate;
   final String category;
   final String subCategory;
@@ -23,6 +24,7 @@ class Product extends Equatable {
   Product({
     this.id = '',
     required this.name,
+    required this.tag,
     required this.description,
     required this.pictures,
     required this.rate,
@@ -44,6 +46,7 @@ class Product extends Equatable {
   Product copyWith(
       {String? id,
       String? name,
+      String? tag,
       String? description,
       List<String>? pictures,
       int? rate,
@@ -55,6 +58,7 @@ class Product extends Equatable {
     return Product(
       id: id ?? this.id,
       name: name ?? this.name,
+      tag: tag ?? this.tag,
       description: description ?? this.description,
       pictures: pictures ?? this.pictures,
       rate: rate ?? this.rate,
@@ -67,9 +71,11 @@ class Product extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         id,
         name,
+        tag,
         description,
         pictures,
         rate,
@@ -84,6 +90,7 @@ class Product extends Equatable {
   String toString() => 'Product: {'
       'id: $id, '
       'name: $name, '
+      'tag: $tag, '
       'description: $description, '
       'pictures: $pictures, '
       'rate: $rate, '
@@ -94,12 +101,13 @@ class Product extends Equatable {
       'available: $available'
       '}';
 
-  ProductEntity toEntity() => ProductEntity(id, name, description, pictures,
-      rate, category, subCategory, farmerId, communityId, available);
+  ProductEntity toEntity() => ProductEntity(id, name, tag, description,
+      pictures, rate, category, subCategory, farmerId, communityId, available);
 
   static Product fromEntity(ProductEntity entity) => Product(
-        id: entity.id,
+    id: entity.id,
         name: entity.name,
+        tag: entity.tag,
         description: entity.description,
         pictures: entity.pictures,
         rate: entity.rate,

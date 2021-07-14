@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 class ProductEntity extends Equatable {
   static const String ID = 'id';
   static const String NAME = 'name';
+  static const String TAG = 'tag';
   static const String DESCRIPTION = 'description';
   static const String PICTURES = 'pictures';
   static const String RATE = 'rate';
@@ -15,8 +16,9 @@ class ProductEntity extends Equatable {
 
   final String id;
   final String name;
+  final String tag;
   final String description;
-  final List<String> pictures;
+  final List pictures;
   final int rate;
   final String category;
   final String subCategory;
@@ -27,6 +29,7 @@ class ProductEntity extends Equatable {
   const ProductEntity(
       this.id,
       this.name,
+      this.tag,
       this.description,
       this.pictures,
       this.rate,
@@ -36,9 +39,11 @@ class ProductEntity extends Equatable {
       this.communityId,
       this.available);
 
-  Map<String, Object> toJson() => {
+  Map<String, Object> toJson() =>
+      {
         ID: id,
         NAME: name,
+        TAG: tag,
         DESCRIPTION: description,
         PICTURES: pictures,
         RATE: rate,
@@ -50,9 +55,11 @@ class ProductEntity extends Equatable {
       };
 
   @override
-  List<Object> get props => [
+  List<Object> get props =>
+      [
         id,
         name,
+        tag,
         description,
         pictures,
         rate,
@@ -67,6 +74,7 @@ class ProductEntity extends Equatable {
     return ProductEntity(
       json[ID] as String,
       json[NAME] as String,
+      json[TAG] as String,
       json[DESCRIPTION] as String,
       json[PICTURES] as List<String>,
       json[RATE] as int,
@@ -82,6 +90,7 @@ class ProductEntity extends Equatable {
     return ProductEntity(
       snapshot.id,
       snapshot.get(NAME),
+      snapshot.get(TAG),
       snapshot.get(DESCRIPTION),
       snapshot.get(PICTURES),
       snapshot.get(RATE),
@@ -96,6 +105,7 @@ class ProductEntity extends Equatable {
   Map<String, Object> toDocument() {
     return {
       NAME: name,
+      TAG: tag,
       DESCRIPTION: description,
       PICTURES: pictures,
       RATE: rate,

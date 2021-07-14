@@ -1,6 +1,6 @@
 import 'package:agri_commerce/services/firebase_services.dart';
 import 'package:agri_commerce/widgets/custom_input.dart';
-import 'package:agri_commerce/widgets/product_card.dart';
+import 'package:agri_commerce/widgets/old_product_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 

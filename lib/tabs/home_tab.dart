@@ -1,62 +1,69 @@
-import 'package:agri_commerce/services/firebase_services.dart';
+import 'package:agri_commerce/bloc/products/products_bloc.dart';
+import 'package:agri_commerce/screens/products.dart';
 import 'package:agri_commerce/widgets/custom_action_bar.dart';
-import 'package:agri_commerce/widgets/product_card.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:products_repository/products_repository.dart';
+import 'package:provider/provider.dart';
 
 class HomeTab extends StatelessWidget {
-  firebase_services _firebaseServices = firebase_services();
+  static final String routeName = '/select-subcategory';
+
+  const HomeTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Stack(
-        children: [
-          FutureBuilder<QuerySnapshot>(
-            future: _firebaseServices.productsRef.where('category', isEqualTo: 'Fruits').get(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Scaffold(
-                  body: Center(
-                    child: Text("Error: ${snapshot.error}"),
-                  ),
-                );
-              }
+    var products = context.select((ProductsBloc bloc) =>
+        bloc.state is ProductsLoadSuccess
+            ? (bloc.state as ProductsLoadSuccess).products
+            : {});
+    var subCategories = products.keys.toList();
 
-              // Collection Data ready to display
-              if (snapshot.connectionState == ConnectionState.done &&
-                  snapshot.data != null) {
-                // Display the data inside a list view
-                return ListView(
-                  padding: EdgeInsets.only(
-                    top: 108.0,
-                    bottom: 12.0,
+    return Stack(
+      children: [
+        GridView.builder(
+          itemCount: subCategories.length,
+          padding: EdgeInsets.only(top: 108, left: 16, right: 16),
+          gridDelegate:
+              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+          itemBuilder: (context, index) => Padding(
+            padding: EdgeInsets.all(8.0),
+            child: InkWell(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => Products(
+                    products: products[subCategories[index]],
                   ),
-                  children: snapshot.data!.docs.map((document) {
-                    return ProductCard(
-                      title: document.get('sub-category'),
-                      imageUrl: document.get('images')[0],
-                      price: "\₹${document.get('price')}",
-                      productId: document.id,
-                    );
-                  }).toList(),
-                );
-              }
-
-              // Loading State
-              return Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(),
                 ),
-              );
-            },
+              ),
+              child: Container(
+                padding: EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Theme.of(context).colorScheme.secondary),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Column(
+                  children: [
+                    Image.asset(
+                      Fruits.containsKey(subCategories[index])
+                          ? 'assets/images/tab_fruits.png'
+                          : "assets/images/tab_vegetables.png",
+                      height: 72,
+                      width: 72,
+                    ),
+                    Text(subCategories[index]),
+                  ],
+                ),
+              ),
+            ),
           ),
-          CustomActionBar(
-            title: "Fruits",
-            hasBackArrrow: false,
-          ),
-        ],
-      ),
+        ),
+        CustomActionBar(
+          title: 'Select sub category',
+          hasBackArrow: false,
+        )
+      ],
     );
   }
 }

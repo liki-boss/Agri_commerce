@@ -13,7 +13,7 @@ abstract class ProductsRepository {
 }
 
 class FirebaseProductsRepository implements ProductsRepository {
-  final productsCollection = FirebaseFirestore.instance.collection('products');
+  final productsCollection = FirebaseFirestore.instance.collection('Products');
 
   @override
   Future<void> addProduct(Product product) {
