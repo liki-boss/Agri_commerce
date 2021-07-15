@@ -57,6 +57,8 @@ dependencies:
     path: packages/products_repository
   users_repository:
     path: packages/users_repository
+  communities_repository:
+    path: packages/communities_repository
 
 
 dev_dependencies:

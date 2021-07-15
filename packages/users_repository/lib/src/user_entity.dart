@@ -15,6 +15,10 @@ class UserEntity extends Equatable {
   @override
   List<Object?> get props => [id, displayName, avatarUrl];
 
+  @override
+  String toString() =>
+      'UserEntity: { id: $id, displayName: $displayName, avatarUrl: $avatarUrl }';
+
   static UserEntity fromSnapshot(DocumentSnapshot snapshot) => UserEntity(
       snapshot.id, snapshot.get(DISPLAY_NAME), snapshot.get(AVATAR_URL));
 

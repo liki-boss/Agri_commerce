@@ -12,7 +12,7 @@ class ConnekTUser extends Equatable {
       {required this.id, required this.displayName, this.avatarUrl = ""});
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [id, displayName, avatarUrl];
 
   @override
   String toString() =>

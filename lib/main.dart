@@ -1,7 +1,9 @@
 import 'package:agri_commerce/app_bloc_observer.dart';
+import 'package:agri_commerce/bloc/communities/communities_bloc.dart';
 import 'package:agri_commerce/bloc/products/products_bloc.dart';
 import 'package:agri_commerce/bloc/users/users_bloc.dart';
 import 'package:agri_commerce/screens/landing_page.dart';
+import 'package:communities_repository/communities_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,7 +30,12 @@ class MyApp extends StatelessWidget {
           create: (context) =>
               UsersBloc(firebaseUsersRepository: FirebaseUsersRepository())
                 ..add(UsersLoaded()),
-        )
+        ),
+        BlocProvider(
+          create: (context) => CommunitiesBloc(
+              firebaseCommunitiesRepository: FirebaseCommunitiesRepository())
+            ..add(CommunitiesLoaded()),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

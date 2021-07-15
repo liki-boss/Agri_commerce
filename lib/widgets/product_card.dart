@@ -1,5 +1,7 @@
+import 'package:agri_commerce/bloc/communities/communities_bloc.dart';
 import 'package:agri_commerce/bloc/users/users_bloc.dart';
 import 'package:agri_commerce/widgets/product_size.dart';
+import 'package:communities_repository/communities_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:products_repository/products_repository.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +13,12 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Community? community = context.select((CommunitiesBloc bloc) =>
+        bloc.state is CommunitiesLoadSuccess
+            ? (bloc.state as CommunitiesLoadSuccess)
+                .communities[product.communityId]
+            : null);
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
@@ -53,7 +61,9 @@ class ProductCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '${product.communityId}, Mandya',
+                      community != null
+                          ? '${community.displayName}, ${community.district}'
+                          : '',
                       style: TextStyle(color: Color(0xFF666666)),
                     ),
                     Padding(
