@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:products_repository/src/models/product_model.dart';
 import 'package:products_repository/src/product_entity.dart';
+import 'package:products_repository/src/product_model.dart';
 
 abstract class ProductsRepository {
   Future<void> addProduct(Product product);

@@ -54,7 +54,9 @@ dependencies:
   flutter_bloc: ^7.0.1
   equatable: ^2.0.3
   products_repository:
-    path: products_repository
+    path: packages/products_repository
+  users_repository:
+    path: packages/users_repository
 
 
 dev_dependencies:

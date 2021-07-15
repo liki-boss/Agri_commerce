@@ -2,8 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:products_repository/src/product_entity.dart';
 
-import 'fruits.dart';
-import 'vegetables.dart';
+import 'constants/fruits.dart';
+import 'constants/vegetables.dart';
 
 @immutable
 class Product extends Equatable {

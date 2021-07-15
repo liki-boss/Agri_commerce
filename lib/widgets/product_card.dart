@@ -1,6 +1,8 @@
+import 'package:agri_commerce/bloc/users/users_bloc.dart';
 import 'package:agri_commerce/widgets/product_size.dart';
 import 'package:flutter/material.dart';
 import 'package:products_repository/products_repository.dart';
+import 'package:provider/provider.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -40,7 +42,12 @@ class ProductCard extends StatelessWidget {
                         ),
                       ),
                     Text(
-                      product.farmerId,
+                      context.select((UsersBloc bloc) =>
+                          bloc.state is UsersLoadSuccess
+                              ? (bloc.state as UsersLoadSuccess)
+                                  .users[product.farmerId]!
+                                  .displayName
+                              : ''),
                       style: TextStyle(
                         fontSize: 18,
                       ),
