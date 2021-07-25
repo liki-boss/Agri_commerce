@@ -11,12 +11,12 @@ class Product extends Equatable {
   final String name;
   final String tag;
   final String description;
-  final List pictures;
+  final List<String> pictures;
   final int rate;
   final String category;
   final String subCategory;
   final String farmerId;
-  final String communityId;
+  final String communityId; // might not need this; farmer.communityId
   final bool available;
   late final bool isWeighed;
   late final List<double> weights;
@@ -71,8 +71,7 @@ class Product extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         id,
         name,
         tag,
@@ -105,7 +104,7 @@ class Product extends Equatable {
       pictures, rate, category, subCategory, farmerId, communityId, available);
 
   static Product fromEntity(ProductEntity entity) => Product(
-    id: entity.id,
+        id: entity.id,
         name: entity.name,
         tag: entity.tag,
         description: entity.description,

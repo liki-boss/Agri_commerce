@@ -1,14 +1,17 @@
 import 'package:agri_commerce/app_bloc_observer.dart';
+import 'package:agri_commerce/bloc/baskets/baskets_bloc.dart';
 import 'package:agri_commerce/bloc/communities/communities_bloc.dart';
 import 'package:agri_commerce/bloc/products/products_bloc.dart';
 import 'package:agri_commerce/bloc/users/users_bloc.dart';
 import 'package:agri_commerce/screens/landing_page.dart';
+import 'package:baskets_repository/baskets_repository.dart';
 import 'package:communities_repository/communities_repository.dart';
+import 'package:products_repository/products_repository.dart';
+import 'package:users_repository/users_repository.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:products_repository/products_repository.dart';
-import 'package:users_repository/users_repository.dart';
 
 void main() {
   Bloc.observer = AppBlocObserver();
@@ -35,6 +38,11 @@ class MyApp extends StatelessWidget {
           create: (context) => CommunitiesBloc(
               firebaseCommunitiesRepository: FirebaseCommunitiesRepository())
             ..add(CommunitiesLoaded()),
+        ),
+        BlocProvider(
+          create: (context) => BasketsBloc(
+              firebaseBasketsRepository: FirebaseBasketsRepository())
+            ..add(BasketsLoaded()),
         ),
       ],
       child: MaterialApp(

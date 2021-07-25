@@ -15,7 +15,7 @@ class HomeTab extends StatelessWidget {
   Widget build(BuildContext context) {
     var products = context.select((ProductsBloc bloc) =>
         bloc.state is ProductsLoadSuccess
-            ? (bloc.state as ProductsLoadSuccess).products
+            ? (bloc.state as ProductsLoadSuccess).productsByCategory
             : {});
     var subCategories = products.keys.toList();
 

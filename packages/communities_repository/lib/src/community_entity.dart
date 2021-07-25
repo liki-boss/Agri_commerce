@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class CommunityEntity extends Equatable {
-  static const String ID = 'id';
   static const String DISPLAY_NAME = 'display-name';
   static const String AVATAR_URL = 'avatar-url';
   static const String DISTRICT = 'district';
@@ -26,8 +25,12 @@ class CommunityEntity extends Equatable {
   List<Object?> get props => [id, displayName, avatarUrl, district];
 
   static CommunityEntity fromSnapshot(DocumentSnapshot snapshot) =>
-      CommunityEntity(snapshot.id, snapshot.get(DISPLAY_NAME),
-          snapshot.get(AVATAR_URL), snapshot.get(DISTRICT));
+      CommunityEntity(
+        snapshot.id,
+        snapshot.get(DISPLAY_NAME),
+        snapshot.get(AVATAR_URL),
+        snapshot.get(DISTRICT),
+      );
 
   Map<String, Object> toDocument() =>
       {DISPLAY_NAME: displayName, AVATAR_URL: avatarUrl, DISTRICT: district};

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class UserEntity extends Equatable {
-  static const String ID = 'id';
   static const String DISPLAY_NAME = 'display-name';
   static const String AVATAR_URL = 'avatar-url';
 

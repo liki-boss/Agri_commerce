@@ -18,7 +18,7 @@ class ProductEntity extends Equatable {
   final String name;
   final String tag;
   final String description;
-  final List pictures;
+  final List<String> pictures;
   final int rate;
   final String category;
   final String subCategory;
@@ -92,7 +92,7 @@ class ProductEntity extends Equatable {
       snapshot.get(NAME),
       snapshot.get(TAG),
       snapshot.get(DESCRIPTION),
-      snapshot.get(PICTURES),
+      (snapshot.get(PICTURES) as List).cast<String>(),
       snapshot.get(RATE),
       snapshot.get(CATEGORY),
       snapshot.get(SUB_CATEGORY),

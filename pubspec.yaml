@@ -59,6 +59,8 @@ dependencies:
     path: packages/users_repository
   communities_repository:
     path: packages/communities_repository
+  baskets_repository:
+    path: packages/baskets_repository
 
 
 dev_dependencies:
